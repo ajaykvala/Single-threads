@@ -7,10 +7,10 @@ int main()
     //input
     int n,x;
     fstream fin,fout;
-    string name = "./testcase/input/input00.txt";
+    string name = "./testcase/input/input03.txt";
     fin.open(name);
     fin >> n;
-    vector<vector<int>> dist(n,vector<int>(n));
+    int dist[n][n];
     for(int i = 0;i<n;i++)
         for(int j = 0;j<n;j++)
             fin >> dist[i][j];
@@ -31,7 +31,7 @@ int main()
     auto duration = std::chrono::duration_cast<std::chrono::nanoseconds>(end-begin).count();
 
     //validate
-    name = "./testcase/output/output00.txt";
+    name = "./testcase/output/output03.txt";
     fout.open(name);
     for(int i = 0;i<n;i++)
     {
