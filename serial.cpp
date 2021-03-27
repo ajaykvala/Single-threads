@@ -4,14 +4,19 @@ using namespace std;
 
 int main()
 {
-    int n;
-    cin >> n;
-
-    vector<vector<int>> dist(n,vector<int>(n,0));
+    //input
+    int n,x;
+    fstream fin,fout;
+    string name = "./testcase/input/input00.txt";
+    fin.open(name);
+    fin >> n;
+    vector<vector<int>> dist(n,vector<int>(n));
     for(int i = 0;i<n;i++)
         for(int j = 0;j<n;j++)
-            cin >> dist[i][j];
+            fin >> dist[i][j];
 
+    //algo
+    auto begin = std::chrono::high_resolution_clock::now();
     for(int k = 0;k<n;k++)
     {
         for(int i = 0;i < n;i++)
@@ -22,13 +27,30 @@ int main()
             }
         }
     }
+    auto end = std::chrono::high_resolution_clock::now();
+    auto duration = std::chrono::duration_cast<std::chrono::nanoseconds>(end-begin).count();
 
+    //validate
+    name = "./testcase/output/output00.txt";
+    fout.open(name);
     for(int i = 0;i<n;i++)
     {
         for(int j = 0;j<n;j++)
-            cout << dist[i][j] << " ";
-        cout << '\n';
+        {
+            fout >> x;
+            if(x != dist[i][j])
+            {
+                cout << i << " " << j << endl;
+                cout << x << " " << dist[i][j] << endl;
+                cout << "FAILED " << duration*1e-6 << "ms" << '\n';
+                return 0;
+            }
+        }
     }
+    cout << "PASSED " << duration*1e-6 << "ms" << '\n';
+
+    fout.close();
+    fin.close();
 
     return 0;
 

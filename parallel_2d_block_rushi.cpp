@@ -1,6 +1,7 @@
 #include<bits/stdc++.h>
 
 using namespace std;
+using namespace chrono;
 
 int main()
 {
@@ -24,7 +25,7 @@ int main()
         for(int j = 0;j<n;j++)
             fin >> dist[i][j];
 
-
+    auto begin = std::chrono::high_resolution_clock::now();
     for(k = 0;k<n;k+=BLOCK_SIZE)
     {
         //do floyd of row [k to k + B - 1] and col [k to k + B - 1]
@@ -33,7 +34,7 @@ int main()
                 for(c = k;c <= k + BLOCK_SIZE - 1;c++)
                     dist[b][c] = min(dist[b][c],dist[b][a] + dist[a][c]);
 
-        #pragma omp parallel for num_threads(6)
+        #pragma omp parallel num_threads(6)
         for(j = 0;j < n;j+=BLOCK_SIZE)
         {
             if(j == k)
@@ -45,7 +46,7 @@ int main()
                         dist[b][c] = min(dist[b][c],dist[b][a] + dist[a][c]);
         }
 
-        #pragma omp parallel for num_threads(6)
+        #pragma omp parallel num_threads(6)
         for(i = 0;i<n;i+=BLOCK_SIZE)
         {
             if(i == k)
@@ -68,6 +69,8 @@ int main()
             }
         }
     }
+    auto end = std::chrono::high_resolution_clock::now();
+    auto duration = std::chrono::duration_cast<std::chrono::nanoseconds>(end-begin).count();
 
     //validation
     name = "./testcase/output/output00.txt";
@@ -81,12 +84,12 @@ int main()
             {
                 cout << i << " " << j << endl;
                 cout << x << " " << dist[i][j] << endl;
-                cout << "FAILED\n";
+                cout << "FAILED " << duration*1e-6 << "ms" << '\n';
                 return 0;
             }
         }
     }
-    cout << "PASSED\n";
+    cout << "PASSED " << duration*1e-6 << "ms" << '\n';
 
     fout.close();
     fin.close();
