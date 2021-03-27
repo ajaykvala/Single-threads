@@ -1,4 +1,5 @@
 #include<bits/stdc++.h>
+#include<omp.h>
 
 using namespace std;
 using namespace chrono;
@@ -6,26 +7,27 @@ using namespace chrono;
 int main()
 {
     //statics
-    static int BLOCK_SIZE = 4;
+    static int BLOCK_SIZE = 32;
 
     //variables
     int n,k,j,i,a,b,c,x;
     int B;
-    vector<vector<int>> dist;
 
     //input
     fstream fin,fout;
-    string name = "./testcase/input/input00.txt";
+    string name = "./testcase/input/input03.txt";
     fin.open(name);
     fin >> n;
+    int dist[n][n];
     B = n/BLOCK_SIZE;
 
-    dist.resize(n,vector<int> (n));
     for(int i = 0;i<n;i++)
         for(int j = 0;j<n;j++)
             fin >> dist[i][j];
 
+
     auto begin = std::chrono::high_resolution_clock::now();
+    
     for(k = 0;k<n;k+=BLOCK_SIZE)
     {
         //do floyd of row [k to k + B - 1] and col [k to k + B - 1]
@@ -34,7 +36,7 @@ int main()
                 for(c = k;c <= k + BLOCK_SIZE - 1;c++)
                     dist[b][c] = min(dist[b][c],dist[b][a] + dist[a][c]);
 
-        #pragma omp parallel num_threads(6)
+        #pragma omp parallel for num_threads(4) private(a,b,c,j)
         for(j = 0;j < n;j+=BLOCK_SIZE)
         {
             if(j == k)
@@ -46,7 +48,7 @@ int main()
                         dist[b][c] = min(dist[b][c],dist[b][a] + dist[a][c]);
         }
 
-        #pragma omp parallel num_threads(6)
+        #pragma omp parallel for num_threads(4) private(a,b,c,i,j)
         for(i = 0;i<n;i+=BLOCK_SIZE)
         {
             if(i == k)
@@ -73,7 +75,7 @@ int main()
     auto duration = std::chrono::duration_cast<std::chrono::nanoseconds>(end-begin).count();
 
     //validation
-    name = "./testcase/output/output00.txt";
+    name = "./testcase/output/output03.txt";
     fout.open(name);
     for(i = 0;i<n;i++)
     {
