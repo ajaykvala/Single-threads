@@ -4,9 +4,8 @@
 using namespace std;
 using namespace chrono;
 
-int dist[2096][2096];
-int linearRowWise[2096*2096];
-int linearColWise[2096*2096];
+int** dist;
+int* linearRowWise;
 
 int main()
 {
@@ -21,21 +20,20 @@ int main()
     fin.open(name);
     fin >> n;
     
-
+    linearRowWise = (int*)malloc(n*n*sizeof(int));
+    dist = (int**)malloc(n*sizeof(int));
+    for(i = 0;i<n;i++)
+        dist[i] = (int*)malloc(n*sizeof(int));
     
 
     for(int i = 0;i<n;i++)
         for(int j = 0;j<n;j++)
             fin >> dist[i][j];
 
-
-    
-    
     for(int i = 0;i<n;i++)
         for(int j = 0;j<n;j++)
         {
             linearRowWise[i + j*n] = dist[i][j];
-            linearColWise[i*n + j] = dist[i][j];
         }
     auto begin = std::chrono::high_resolution_clock::now();
     for(int k = 0;k<n;k++)
@@ -45,19 +43,18 @@ int main()
         {
             for(j = 0;j<n;j++)
             {
-                dist[i][j] = min(dist[i][j],linearRowWise[i + k*n] + linearColWise[k*n + j]);
+                dist[i][j] = min(dist[i][j],linearRowWise[i + k*n] + dist[i][j]);
             }
         }
 
-        // #pragma omp parallel for num_threads(4) private(i,j)
-        // for(i = 0;i < n;i++)
-        // {
-        //     for(j = 0;j<n;j++)
-        //     {
-        //         linearRowWise[i + j*n] = dist[i][j];
-        //         linearColWise[i*n + j] = dist[i][j];
-        //     }
-        // }
+        #pragma omp parallel for num_threads(4) private(i,j)
+        for(i = 0;i < n;i++)
+        {
+            for(j = 0;j<n;j++)
+            {
+                linearRowWise[i + j*n] = dist[i][j];
+            }
+        }
     }
 
     auto end = std::chrono::high_resolution_clock::now();
