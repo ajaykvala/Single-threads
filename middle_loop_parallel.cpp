@@ -44,11 +44,13 @@ int main()
         fin.open(nam);
         fout.open(nam1);
 
+        //Input(same for all codes)
         fin >> n;
         for(int i = 0;i<n;i++)
             for(int j = 0;j<n;j++)
                 fin >> dist[i][j];
 
+        //code
         double start = omp_get_wtime();
         for(int k = 0;k<n;k++)
         {
@@ -65,6 +67,7 @@ int main()
         double end = omp_get_wtime();
         double duration = (end - start)*1000;
 
+        //validation (same for all codes)
         int x;
         for(int i = 0;i<n;i++)
         {
