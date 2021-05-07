@@ -7,8 +7,13 @@ int n;
 
 int main()
 {
-    int size = 4096;
-    int num = 7;
+    //testcase will be saved in /testcase/{size}/input{num}.txt
+    //size of testcase
+    int size = 512;
+    //testcase number to start and end with
+    int start_num = 8;
+    int end_num = 9;
+
     for(;size <= 4096;size *= 2)
     {
         string s = "./testcase/";
@@ -22,7 +27,7 @@ int main()
         reverse(mp.begin(),mp.end());
         s += mp;
         string t = ".txt";
-        for(int yy = 0;yy < num;yy++)
+        for(int yy = start_num;yy <= end_num;yy++)
         {
             cout << yy << '\n';
             int intinf = 1e4;
@@ -53,10 +58,8 @@ int main()
 
             for(int k = 0;k<n;k++)
             {
-                #pragma omp parallel for num_threads(4) 
                 for(int i = 0;i<n;i++)
                 {
-                    #pragma omp simd
                     for(int j = 0;j<n;j++)
                     {
                         dist[i][j] = min(dist[i][j],dist[i][k] + dist[k][j]);

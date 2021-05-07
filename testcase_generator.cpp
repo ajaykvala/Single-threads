@@ -5,8 +5,9 @@ using namespace std;
 int main()
 {
     int size = 64;
-    int num = 7;
-    for(;size <= 4096;size *= 2)
+    int start_num = 8;
+    int end_num = 8;
+    for(;size <= 64;size *= 2)
     {
         string s = "./testcase/";
         int x = size;
@@ -20,7 +21,7 @@ int main()
         s += mp;
         s += "/input";
         string t = ".txt";
-        for(int yy = 0;yy < num;yy++)
+        for(int yy = start_num;yy < end_num;yy++)
         {
             cout << yy << '\n';
             int intinf = 1e4;
