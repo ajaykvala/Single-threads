@@ -6,13 +6,12 @@ using namespace std;
 int dist[4096][4096];
 int n;
 int a,b,c,i,j,k;
-
+int arr[6]={1,2,3,4,8,16};
 int main()
 {
     //set start size of input and end size of input. Please be sure that testcases of set sizes are available in testcase folder.
     int start_size = 128;
     int end_size = 2048;
-    int max_thds = 4;
 
     string name_csv = "Result_parallel_block_FW.csv";
     fstream csvv;
@@ -21,7 +20,7 @@ int main()
 
     int size = start_size;
     for(;size <= end_size;size *= 2)
-    {   
+    {
         // number of runs (recommended 35 for small problem sizes, and 7 for large problem sizes)
         int num = 7;
 
@@ -41,8 +40,9 @@ int main()
         double base_duration;
         double speed_up;
 
-        for(int thds = 1;thds <= max_thds;thds++)
+        for(int th = 0;th <= 5;th++)
         {
+            int thds=arr[th];
             vector<double> pk;
             for(int yy = 0;yy < num;yy++)
             {
@@ -51,7 +51,7 @@ int main()
 
                 string nam;
                 string nam1;
-                
+
                 nam += s;
                 nam += "/input";
                 nam += (char)(yyy/10 + '0');
@@ -63,7 +63,7 @@ int main()
                 nam1 += (char)(yyy/10 + '0');
                 nam1 += (char)(yyy%10 + '0');
                 nam1 += t;
-            
+
                 fstream fin,fout;
                 fin.open(nam);
                 fout.open(nam1);
@@ -139,7 +139,7 @@ int main()
                 double duration = (end - start)*1000;
                 pk.push_back(duration);
 
-                //validation 
+                //validation
                 int x;
                 for(int i = 0;i<n;i++)
                 {
@@ -153,7 +153,7 @@ int main()
                         }
                     }
                 }
-                
+
                 fin.close();
                 fout.close();
             }
